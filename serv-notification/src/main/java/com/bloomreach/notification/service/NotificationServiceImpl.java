@@ -1,7 +1,10 @@
 package com.bloomreach.notification.service;
 
 import com.bloomreach.notification.service.model.*;
+import java.util.UUID;
+import org.springframework.stereotype.Service;
 
+@Service
 public class NotificationServiceImpl implements NotificationService {
 
 
@@ -9,7 +12,7 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationResponse sendNotification(Notification notification) {
         validate(notification);
 
-        return null;
+        return new NotificationResponse(UUID.randomUUID());
     }
 
     private void validate(Notification notification) {

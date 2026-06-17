@@ -22,7 +22,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotificationResponse'
+                $ref: '#/components/schemas/CreateNotificationResponse'
         '400':
           description: Invalid notification request
 components:
@@ -34,7 +34,7 @@ components:
         - title
         - message
         - severity
-        - delivery
+        - notificationType
         - audience
       properties:
         title:
@@ -49,10 +49,54 @@ components:
           example: The system will be unavailable tonight from 11 PM to 12 AM.
         severity:
           $ref: '#/components/schemas/NotificationSeverity'
-        delivery:
-          $ref: '#/components/schemas/NotificationDelivery'
+        notificationType:
+          $ref: '#/components/schemas/NotificationType'
         audience:
           $ref: '#/components/schemas/NotificationAudience'
+        emailPayload:
+          $ref: '#/components/schemas/EmailPayload'
+        webappPayload:
+          $ref: '#/components/schemas/WebappPayload'
+    EmailPayload:
+      type: object
+      description: Payload used when delivering notifications by email
+      required:
+        - subject
+        - body
+      properties:
+        subject:
+          type: string
+          minLength: 1
+          description: Email subject
+          example: Scheduled maintenance
+        body:
+          type: string
+          minLength: 1
+          description: Email body
+          example: The system will be unavailable tonight from 11 PM to 12 AM.
+    WebappPayload:
+      type: object
+      description: Payload used when delivering notifications in the web app
+      required:
+        - title
+        - description
+        - action
+      properties:
+        title:
+          type: string
+          minLength: 1
+          description: Web app notification title
+          example: Scheduled maintenance
+        description:
+          type: string
+          minLength: 1
+          description: Web app notification description
+          example: The system will be unavailable tonight from 11 PM to 12 AM.
+        action:
+          type: string
+          minLength: 1
+          description: Call to action label or route
+          example: View details
     NotificationAudience:
       type: object
       description: Notification target audience
@@ -93,29 +137,19 @@ components:
         - WARNING
         - CRITICAL
       example: INFO
-    NotificationDelivery:
+    NotificationType:
       type: string
       description: Notification delivery channel
       enum:
         - EMAIL
         - WEBAPP
       example: EMAIL
-    NotificationResponse:
+    CreateNotificationResponse:
       type: object
       description: Notification creation response
+      required:
+        - id
       properties:
         id:
           type: string
           format: uuid
-        status:
-          type: string
-          example: ACCEPTED
-        title:
-          type: string
-        severity:
-          $ref: '#/components/schemas/NotificationSeverity'
-        delivery:
-          $ref: '#/components/schemas/NotificationDelivery'
-        acceptedAt:
-          type: string
-          format: date-time

@@ -5,6 +5,5 @@ import com.bloomreach.notification.service.model.NotificationResponse;
 
 public interface NotificationService {
 
-	NotificationResponse sendNotification(Notification notification);
-
+    NotificationResponse sendNotification(Notification notification);
 }

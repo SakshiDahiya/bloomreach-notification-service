@@ -80,6 +80,7 @@
 								<interfaceOnly>true</interfaceOnly>
 								<openApiNullable>false</openApiNullable>
 								<skipDefaultInterface>true</skipDefaultInterface>
+								<useOneOfInterfaces>false</useOneOfInterfaces>
 								<useSpringBoot3>true</useSpringBoot3>
 								<useTags>true</useTags>
 							</configOptions>
