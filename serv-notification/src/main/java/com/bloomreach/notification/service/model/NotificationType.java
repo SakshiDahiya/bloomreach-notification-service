@@ -1,6 +1,6 @@
 package com.bloomreach.notification.service.model;
 
-public enum NotificationDelivery {
+public enum NotificationType {
 	EMAIL,
 	WEBAPP
 }

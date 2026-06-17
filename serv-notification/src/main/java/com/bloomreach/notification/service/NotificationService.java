@@ -1,9 +1,10 @@
 package com.bloomreach.notification.service;
 
 import com.bloomreach.notification.service.model.Notification;
+import com.bloomreach.notification.service.model.NotificationResponse;
 
 public interface NotificationService {
 
-	void sendNotification(Notification notification);
+	NotificationResponse sendNotification(Notification notification);
 
 }
