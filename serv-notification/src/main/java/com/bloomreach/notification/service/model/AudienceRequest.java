@@ -1,7 +1,8 @@
-package com.bloomreach.notification.api.model;
+package com.bloomreach.notification.service.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 import java.util.Map;
 

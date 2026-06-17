@@ -1,4 +1,4 @@
-package com.bloomreach.notification.api.model;
+package com.bloomreach.notification.service.model;
 
 public enum NotificationDelivery {
 	EMAIL,

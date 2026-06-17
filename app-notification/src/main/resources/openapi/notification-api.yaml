@@ -1,0 +1,121 @@
+openapi: 3.0.3
+info:
+  title: Notification API
+  description: API documentation for the notification service
+  version: v1
+paths:
+  /api/notifications:
+    post:
+      tags:
+        - Notifications
+      summary: Create a notification
+      operationId: createNotification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateNotificationRequest'
+      responses:
+        '202':
+          description: Notification accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponse'
+        '400':
+          description: Invalid notification request
+components:
+  schemas:
+    CreateNotificationRequest:
+      type: object
+      description: Request to create a notification
+      required:
+        - title
+        - message
+        - severity
+        - delivery
+        - audience
+      properties:
+        title:
+          type: string
+          minLength: 1
+          description: Notification title
+          example: Scheduled maintenance
+        message:
+          type: string
+          minLength: 1
+          description: Notification message
+          example: The system will be unavailable tonight from 11 PM to 12 AM.
+        severity:
+          $ref: '#/components/schemas/NotificationSeverity'
+        delivery:
+          $ref: '#/components/schemas/NotificationDelivery'
+        audience:
+          $ref: '#/components/schemas/NotificationAudience'
+    NotificationAudience:
+      type: object
+      description: Notification target audience
+      required:
+        - userIds
+        - groups
+        - labels
+      properties:
+        userIds:
+          type: array
+          description: User ids that should receive the notification
+          example:
+            - user-1
+            - user-2
+          items:
+            type: string
+        groups:
+          type: array
+          description: Groups that should receive the notification
+          example:
+            - admins
+            - support
+          items:
+            type: string
+        labels:
+          type: object
+          description: Additional audience labels
+          additionalProperties:
+            type: string
+          example:
+            region: us
+            tier: gold
+    NotificationSeverity:
+      type: string
+      description: Notification severity
+      enum:
+        - INFO
+        - WARNING
+        - CRITICAL
+      example: INFO
+    NotificationDelivery:
+      type: string
+      description: Notification delivery channel
+      enum:
+        - EMAIL
+        - WEBAPP
+      example: EMAIL
+    NotificationResponse:
+      type: object
+      description: Notification creation response
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          example: ACCEPTED
+        title:
+          type: string
+        severity:
+          $ref: '#/components/schemas/NotificationSeverity'
+        delivery:
+          $ref: '#/components/schemas/NotificationDelivery'
+        acceptedAt:
+          type: string
+          format: date-time

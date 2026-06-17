@@ -1,6 +1,7 @@
-package com.bloomreach.notification.api.model;
+package com.bloomreach.notification.service.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.OffsetDateTime;
 import java.util.UUID;
 

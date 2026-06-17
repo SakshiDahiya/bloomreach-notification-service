@@ -29,11 +29,13 @@
 	</scm>
 	<properties>
 		<java.version>25</java.version>
+		<openapi-generator.version>7.23.0</openapi-generator.version>
 		<springdoc-openapi.version>3.0.3</springdoc-openapi.version>
 	</properties>
 
 	<modules>
 		<module>app-notification</module>
+		<module>serv-notification</module>
 	</modules>
 
 </project>
