@@ -1,0 +1,103 @@
+openapi: 3.0.3
+info:
+  title: WebSockets API
+  description: |
+    API for managing WebSocket connections with frontend applications and delivering
+    messages to active sessions.
+
+    ## WebSocket session endpoint
+
+    Frontend applications establish a persistent WebSocket connection by upgrading
+    an HTTP GET request to `GET /ws/sessions`. The request must include the
+    `X-User-Id` header. Each connection is assigned a unique connection id at handshake
+    time, and active connections are indexed by user id.
+
+    Example:
+
+    ```
+    GET /ws/sessions HTTP/1.1
+    Host: websocket-server.example.com
+    Upgrade: websocket
+    Connection: Upgrade
+    X-User-Id: user-1
+    Sec-WebSocket-Key: ...
+    Sec-WebSocket-Version: 13
+    ```
+  version: v1
+paths:
+  /api/internal/messages:
+    post:
+      tags:
+        - Internal Messages
+      summary: Send a message to a user's active WebSocket connections
+      description: |
+        Internal API used by other services to push a JSON payload to every active
+        WebSocket connection registered for the given user id.
+      operationId: sendMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMessageRequest'
+      responses:
+        '200':
+          description: Message delivery attempted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendMessageResponse'
+        '400':
+          description: Invalid request
+components:
+  schemas:
+    SendMessageRequest:
+      type: object
+      description: Request to deliver a JSON payload to a user's WebSocket connections
+      required:
+        - userId
+        - payload
+      properties:
+        userId:
+          type: string
+          minLength: 1
+          description: Target user id
+          example: user-1
+        payload:
+          type: object
+          description: JSON payload to send to the user's active WebSocket connections
+          additionalProperties: true
+          example:
+            title: Scheduled maintenance
+            description: The system will be unavailable tonight.
+            action: View details
+    SendMessageResponse:
+      type: object
+      description: Result of a message delivery attempt
+      required:
+        - userId
+        - connected
+        - deliveredConnectionCount
+        - connectionIds
+      properties:
+        userId:
+          type: string
+          description: Target user id
+          example: user-1
+        connected:
+          type: boolean
+          description: Whether the user had at least one active WebSocket connection
+          example: true
+        deliveredConnectionCount:
+          type: integer
+          format: int32
+          minimum: 0
+          description: Number of connections that received the payload
+          example: 2
+        connectionIds:
+          type: array
+          description: Connection ids that received the payload
+          items:
+            type: string
+          example:
+            - 7f3c2a1b-4d5e-6f70-8192-a3b4c5d6e7f8

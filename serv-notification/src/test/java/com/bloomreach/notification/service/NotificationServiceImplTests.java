@@ -10,9 +10,10 @@ import com.bloomreach.notification.service.model.NotificationEntity;
 import com.bloomreach.notification.service.model.NotificationResponse;
 import com.bloomreach.notification.service.model.NotificationSeverity;
 import com.bloomreach.notification.service.model.NotificationType;
-import com.bloomreach.notification.service.delivery.EmailNotificationDeliveryAdaptor;
+import com.bloomreach.notification.service.delivery.email.EmailNotificationDeliveryAdaptor;
 import com.bloomreach.notification.service.delivery.NotificationDeliveryAdaptorRegistry;
-import com.bloomreach.notification.service.delivery.WebappNotificationDeliveryAdaptor;
+import com.bloomreach.notification.service.delivery.webapp.SendMessageResponse;
+import com.bloomreach.notification.service.delivery.webapp.WebAppNotificationDeliveryAdaptor;
 import com.bloomreach.notification.service.delivery.email.SendGridEmailProvider;
 import com.bloomreach.notification.service.repository.InMemoryNotificationRepository;
 import java.util.List;
@@ -27,7 +28,8 @@ class NotificationServiceImplTests {
         final NotificationDeliveryAdaptorRegistry registry = new NotificationDeliveryAdaptorRegistry(
                 List.of(
                         new EmailNotificationDeliveryAdaptor(new SendGridEmailProvider("noreply@example.com", "test-api-key")),
-                        new WebappNotificationDeliveryAdaptor()
+                        new WebAppNotificationDeliveryAdaptor((userId, payload) ->
+                                new SendMessageResponse(userId, false, 0, List.of()))
                 )
         );
         final NotificationServiceImpl service = new NotificationServiceImpl(repository, registry);
