@@ -3,6 +3,7 @@ package com.bloomreach.notification.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.bloomreach.notification.service.model.DeliveryStatus;
 import com.bloomreach.notification.service.model.EmailNotificationPayload;
 import com.bloomreach.notification.service.model.Notification;
 import com.bloomreach.notification.service.model.NotificationAudience;
@@ -46,5 +47,9 @@ class NotificationServiceImplTests {
         final NotificationEntity saved = repository.findById(response.id()).orElseThrow();
         assertEquals(notification, saved.notification());
         assertEquals(response.id(), saved.id());
+        assertEquals(
+                DeliveryStatus.SENT,
+                repository.findUserDelivery(response.id(), "user-1").orElseThrow().status()
+        );
     }
 }

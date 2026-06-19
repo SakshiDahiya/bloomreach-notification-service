@@ -48,10 +48,10 @@ public class SendGridEmailProvider implements EmailProvider {
         final Map<String, Object> body = new LinkedHashMap<>();
         body.put("personalizations", List.of(Map.of("to", to)));
         body.put("from", Map.of("email", fromEmail));
-        body.put("subject", request.payload().subject());
+        body.put("subject", request.subject());
         body.put("content", List.of(Map.of(
                 "type", "text/plain",
-                "value", request.payload().body()
+                "value", request.body()
         )));
         body.put("custom_args", Map.of("notification_id", request.notificationId().toString()));
         return body;

@@ -25,6 +25,74 @@ paths:
                 $ref: '#/components/schemas/CreateNotificationResponse'
         '400':
           description: Invalid notification request
+  /api/notifications/{notificationId}/delivery-status:
+    put:
+      tags:
+        - Notifications
+      summary: Update notification delivery status for a user
+      description: |
+        Called by the frontend when a web app notification is received or read.
+        Status can be DELIVERED or READ. Once a notification is marked READ it
+        will not be downgraded if a later DELIVERED update arrives.
+      operationId: updateNotificationDeliveryStatus
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          description: Notification id included in the web app message payload
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDeliveryStatusRequest'
+      responses:
+        '200':
+          description: Delivery status updated or returned unchanged
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationUserDeliveryResponse'
+        '400':
+          description: Invalid delivery status request
+  /api/notifications/pending:
+    get:
+      tags:
+        - Notifications
+      summary: Fetch pending notifications for a user
+      description: |
+        Returns notifications that have not yet been delivered or read by the user.
+        Intended for frontend clients reconnecting after being offline. Only WEBAPP
+        notifications are supported for now.
+      operationId: getPendingNotifications
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          description: User id requesting pending notifications
+          schema:
+            type: string
+            minLength: 1
+          example: user-1
+        - name: notificationType
+          in: query
+          required: true
+          description: Notification channel to fetch pending notifications for
+          schema:
+            $ref: '#/components/schemas/NotificationType'
+          example: WEBAPP
+      responses:
+        '200':
+          description: Pending notifications for the user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PendingNotificationsResponse'
+        '400':
+          description: Invalid request
 components:
   schemas:
     CreateNotificationRequest:
@@ -153,3 +221,86 @@ components:
         id:
           type: string
           format: uuid
+    UpdateDeliveryStatusRequest:
+      type: object
+      description: Request to update a user's delivery status for a web app notification
+      required:
+        - userId
+        - status
+      properties:
+        userId:
+          type: string
+          minLength: 1
+          description: User id reporting the delivery status
+          example: user-1
+        status:
+          $ref: '#/components/schemas/UpdateDeliveryStatus'
+    UpdateDeliveryStatus:
+      type: string
+      description: Delivery status reported by the frontend
+      enum:
+        - DELIVERED
+        - READ
+      example: DELIVERED
+    NotificationUserDeliveryResponse:
+      type: object
+      description: Per-user delivery status for a notification
+      required:
+        - notificationId
+        - userId
+        - status
+        - updatedAt
+      properties:
+        notificationId:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          example: user-1
+        status:
+          $ref: '#/components/schemas/DeliveryStatus'
+        updatedAt:
+          type: string
+          format: date-time
+    DeliveryStatus:
+      type: string
+      description: Delivery status tracked for each notification user
+      enum:
+        - SENT
+        - DELIVERED
+        - READ
+      example: SENT
+    PendingNotificationsResponse:
+      type: object
+      description: Pending notifications for a user
+      required:
+        - notifications
+      properties:
+        notifications:
+          type: array
+          description: Notifications not yet delivered or read by the user
+          items:
+            $ref: '#/components/schemas/PendingWebappNotification'
+    PendingWebappNotification:
+      type: object
+      description: A web app notification waiting to be delivered to the user
+      required:
+        - id
+        - severity
+        - status
+        - createdAt
+        - webappPayload
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Notification id
+        severity:
+          $ref: '#/components/schemas/NotificationSeverity'
+        status:
+          $ref: '#/components/schemas/DeliveryStatus'
+        createdAt:
+          type: string
+          format: date-time
+        webappPayload:
+          $ref: '#/components/schemas/WebappPayload'
