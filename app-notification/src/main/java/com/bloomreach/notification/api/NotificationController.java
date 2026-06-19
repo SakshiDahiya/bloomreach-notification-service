@@ -22,7 +22,7 @@ public class NotificationController implements NotificationsApi {
 
     private final NotificationService notificationService;
 
-    public NotificationController(NotificationService notificationService) {
+    public NotificationController(final NotificationService notificationService) {
         this.notificationService = notificationService;
     }
 
@@ -31,13 +31,13 @@ public class NotificationController implements NotificationsApi {
     @Operation(summary = "Create a notification")
     @ApiResponse(responseCode = "202", description = "Notification accepted")
     @ApiResponse(responseCode = "400", description = "Invalid notification request")
-    public ResponseEntity<CreateNotificationResponse> createNotification(CreateNotificationRequest request) {
-        NotificationResponse notificationResponse = notificationService.sendNotification(toNotification(request));
+    public ResponseEntity<CreateNotificationResponse> createNotification(final CreateNotificationRequest request) {
+        final NotificationResponse notificationResponse = notificationService.sendNotification(toNotification(request));
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(toResponse(notificationResponse));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException exception) {
+    public ResponseEntity<String> handleIllegalArgumentException(final IllegalArgumentException exception) {
         return ResponseEntity.badRequest().body(exception.getMessage());
     }
 }

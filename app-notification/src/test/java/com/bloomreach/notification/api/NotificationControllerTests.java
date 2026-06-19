@@ -21,8 +21,12 @@ import org.springframework.test.web.servlet.MockMvc;
 @Import(NotificationControllerTests.NotificationServiceTestConfiguration.class)
 class NotificationControllerTests {
 
+	private final MockMvc mockMvc;
+
 	@Autowired
-	private MockMvc mockMvc;
+	NotificationControllerTests(final MockMvc mockMvc) {
+		this.mockMvc = mockMvc;
+	}
 
 	@Test
 	void createsNotification() throws Exception {

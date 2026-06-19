@@ -1,21 +1,35 @@
 package com.bloomreach.notification.service;
 
 import com.bloomreach.notification.service.model.*;
+import com.bloomreach.notification.service.delivery.NotificationDeliveryAdaptorRegistry;
+import com.bloomreach.notification.service.repository.NotificationRepository;
+import java.time.Instant;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
+    private final NotificationRepository notificationRepository;
+    private final NotificationDeliveryAdaptorRegistry notificationDeliveryAdaptorRegistry;
 
-    @Override
-    public NotificationResponse sendNotification(Notification notification) {
-        validate(notification);
-
-        return new NotificationResponse(UUID.randomUUID());
+    public NotificationServiceImpl(final NotificationRepository notificationRepository,
+                                  final NotificationDeliveryAdaptorRegistry notificationDeliveryAdaptorRegistry) {
+        this.notificationRepository = notificationRepository;
+        this.notificationDeliveryAdaptorRegistry = notificationDeliveryAdaptorRegistry;
     }
 
-    private void validate(Notification notification) {
+    @Override
+    public NotificationResponse sendNotification(final Notification notification) {
+        validate(notification);
+        final NotificationEntity saved = notificationRepository.save(new NotificationEntity(UUID.randomUUID(), notification, Instant.now()));
+
+        notificationDeliveryAdaptorRegistry.getAdaptor(notification.type()).deliver(saved);
+
+        return new NotificationResponse(saved.id());
+    }
+
+    private void validate(final Notification notification) {
         if (notification == null) {
             throw new IllegalArgumentException("Notification cannot be null");
         }
