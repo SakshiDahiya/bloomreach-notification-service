@@ -37,6 +37,7 @@
 		<module>app-notification</module>
 		<module>app-websockets</module>
 		<module>serv-notification</module>
+		<module>integration-tests</module>
 	</modules>
 
 </project>

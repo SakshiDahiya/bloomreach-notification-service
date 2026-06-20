@@ -31,8 +31,7 @@ public class EmailNotificationDeliveryAdaptor implements NotificationDeliveryAda
         emailProvider.send(new EmailRequest(
                 notificationEntity.id(),
                 recipients,
-                payload.subject(),
-                payload.body()
+                payload
         ));
     }
 }
