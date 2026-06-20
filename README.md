@@ -182,36 +182,17 @@ Defined in `src/main/resources/openapi/websockets-api.yaml`, generated into `com
 
 ## End-to-end flows
 
-### Creating and delivering a web app notification
+### Email notification flow
 
-```
-Client                    app-notification          serv-notification          app-websockets          Frontend
-  │                              │                         │                        │                    │
-  │ POST /api/notifications      │                         │                        │                    │
-  │─────────────────────────────▶│  sendNotification()     │                        │                    │
-  │                              │────────────────────────▶│  save (SENT status)    │                    │
-  │                              │                         │  POST /api/internal/   │                    │
-  │                              │                         │  messages              │                    │
-  │                              │                         │───────────────────────▶│  WebSocket push    │
-  │                              │                         │                        │───────────────────▶│
-  │◀─────────────────────────────│  202 { id }             │                        │                    │
-```
+![Email notification flow](docs/images/email-flow.png)
 
-### Frontend reconnect (user was offline)
+### Online web app notification flow
 
-```
-Frontend                         app-notification
-   │                                    │
-   │ GET /ws/sessions (connect)         │
-   │───────────────────────────────────▶│ app-websockets
-   │                                    │
-   │ GET /api/notifications/pending     │
-   │───────────────────────────────────▶│  returns SENT notifications
-   │◀───────────────────────────────────│
-   │                                    │
-   │ PUT .../delivery-status DELIVERED  │
-   │───────────────────────────────────▶│  updates status
-```
+![Online web app notification flow](docs/images/online-webapp-flow.png)
+
+### Offline web app notification flow (reconnect)
+
+![Offline web app notification flow](docs/images/offline-webapp-flow.png)
 
 ---
 
