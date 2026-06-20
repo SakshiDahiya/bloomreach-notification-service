@@ -10,6 +10,20 @@ A multi-module Spring Boot application for creating, delivering, and tracking no
 - OpenAPI Generator + springdoc (Swagger UI)
 - In-memory persistence (repository interfaces are ready for a real database)
 
+## End-to-end flows
+
+### Email notification flow
+
+![Email notification flow](docs/images/email-flow.png)
+
+### Online web app notification flow
+
+![Online web app notification flow](docs/images/online-webapp-flow.png)
+
+### Offline web app notification flow (reconnect)
+
+![Offline web app notification flow](docs/images/offline-webapp-flow.png)
+
 ## Modules
 
 ```
@@ -177,22 +191,6 @@ Defined in `src/main/resources/openapi/websockets-api.yaml`, generated into `com
 | `WebSocketSessionRegistry` | Thread-safe in-memory session index by user id |
 | `WebSocketMessageServiceImpl` | Serializes and sends JSON to open sessions |
 | `InternalMessagesController` | Implements generated internal messages API |
-
----
-
-## End-to-end flows
-
-### Email notification flow
-
-![Email notification flow](docs/images/email-flow.png)
-
-### Online web app notification flow
-
-![Online web app notification flow](docs/images/online-webapp-flow.png)
-
-### Offline web app notification flow (reconnect)
-
-![Offline web app notification flow](docs/images/offline-webapp-flow.png)
 
 ---
 
